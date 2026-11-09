@@ -1,13 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingStepper from '../components/layout/BookingStepper';
 import { useBookingStore } from '../store/bookingStore';
+import type { User } from '../types';
 
 export default function BookingSlotPage() {
   const navigate = useNavigate();
-  const { setSelectedSlot } = useBookingStore();
+  const {
+    selectSlot,
+    createTemporaryReservation,
+    reservation,
+    bookingLoading,
+    bookingError,
+    timerSeconds,
+    selectedEquipment,
+    user,
+  } = useBookingStore();
   const [selectedDay, setSelectedDay] = useState('Joi, 29 Oct 2026');
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>('t2-10');
+
+  const loggedInUser = user;
+
+  useEffect(() => {
+    if (reservation) {
+      navigate('/rezervare/echipament');
+    }
+  }, [reservation, navigate]);
 
   const days = [
     { day: 'Dum', date: '25 Oct' },
@@ -19,9 +37,30 @@ export default function BookingSlotPage() {
     { day: 'Sâm', date: '31 Oct' },
   ];
 
+  const now = new Date();
+  const dataStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T14:00:00`;
+  const dataEnd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T15:00:00`;
+
+  const handleBook = async () => {
+    if (!loggedInUser) {
+      navigate('/');
+      return;
+    }
+    try {
+      await createTemporaryReservation(
+        loggedInUser.id,
+        1, // terenId - default to football court (id 1 from seeder)
+        dataStart,
+        dataEnd
+      );
+    } catch {
+      // error already set in store
+    }
+  };
+
   const handleNext = () => {
-    setSelectedSlot('Complex Sportiv X', 'Teren 2 · Tenis', selectedDay, '10:00 - 11:00', 60);
-    navigate('/rezervare/echipament');
+    selectSlot('Complexul Sportiv USV Suceava', 'Teren Fotbal', selectedDay, '14:00 - 15:00', 60);
+    handleBook();
   };
 
   return (
@@ -31,11 +70,17 @@ export default function BookingSlotPage() {
           <button onClick={() => navigate('/')} className="text-xs font-semibold text-blue-700 hover:underline mb-1 inline-block">
             ← Înapoi la căutare
           </button>
-          <h1 className="text-2xl font-bold text-slate-900">Complex Sportiv A</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Complexul Sportiv USV Suceava</h1>
           <p className="text-sm text-slate-500">Alege data și intervalul orar liber pe terenul dorit</p>
         </div>
         <BookingStepper currentStep={1} />
       </div>
+
+      {bookingError && (
+        <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-100 text-red-700 text-xs font-medium">
+          {bookingError}
+        </div>
+      )}
 
       {/* Data Picker */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between overflow-x-auto gap-2">
@@ -58,17 +103,16 @@ export default function BookingSlotPage() {
       {/* Grid disponibilitate */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 overflow-x-auto space-y-4">
         <h3 className="font-bold text-slate-800 text-sm">{selectedDay}</h3>
-        
-        {/* Teren 1, 2, 3 slots */}
+
         <div className="space-y-4 min-w-[700px]">
-          {['Teren 1 · Tenis', 'Teren 2 · Tenis', 'Teren 3 · Fotbal'].map((court, cIdx) => (
+          {['Teren Fotbal', 'Teren Tenis', 'Teren Baschet', 'Teren Volei'].map((court, cIdx) => (
             <div key={court} className="flex items-center gap-4">
               <div className="w-32 text-sm font-bold text-slate-800">{court}</div>
               <div className="flex-1 grid grid-cols-6 gap-2">
                 {['08:00', '09:00', '10:00', '11:00', '12:00', '13:00'].map((time, tIdx) => {
-                  const isSelected = selectedSlotId === `${cIdx}-${tIdx}`;// Teren 2, 10:00
-                  const isProcessing = cIdx === 0 && tIdx === 4; // Teren 1, 12:00
-                  
+                  const isSelected = selectedSlotId === `${cIdx}-${tIdx}`;
+                  const isProcessing = cIdx === 0 && tIdx === 4;
+
                   return (
                     <button
                       key={time}
@@ -77,8 +121,8 @@ export default function BookingSlotPage() {
                         isSelected
                           ? 'bg-blue-900 text-white border-blue-900 ring-2 ring-blue-600'
                           : isProcessing
-                          ? 'bg-amber-100 border-amber-300 text-amber-800'
-                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50'
+                            ? 'bg-amber-100 border-amber-300 text-amber-800'
+                            : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50'
                       }`}
                     >
                       {isSelected ? '✓ Selectat' : isProcessing ? '⏱ În curs' : time}
@@ -95,8 +139,8 @@ export default function BookingSlotPage() {
       <div className="bg-white p-4 rounded-xl shadow-md border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <span className="text-xs uppercase font-bold text-slate-400 block">Selecția ta</span>
-          <span className="text-lg font-bold text-slate-900">Teren 2 · Tenis</span>
-          <span className="text-xs text-slate-500 ml-2">Joi, 29 Oct 2026 · 10:00-11:00</span>
+          <span className="text-lg font-bold text-slate-900">Teren Fotbal</span>
+          <span className="text-xs text-slate-500 ml-2">{selectedDay} · 14:00-15:00</span>
         </div>
         <div className="flex items-center gap-6">
           <div>
@@ -105,12 +149,20 @@ export default function BookingSlotPage() {
           </div>
           <button
             onClick={handleNext}
-            className="px-6 py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-semibold text-sm rounded-lg transition-colors"
+            disabled={bookingLoading || !loggedInUser}
+            className="px-6 py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-semibold text-sm rounded-lg transition-colors disabled:opacity-60"
           >
-            Alege echipament →
+            {bookingLoading ? 'Blochează slotul...' : 'Blochează slotul →'}
           </button>
         </div>
       </div>
+
+      {/* Timer display */}
+      {timerSeconds > 0 && (
+        <div className="text-center py-2 text-xs text-amber-700 font-medium">
+          Interval blocat - expiră în {Math.floor(timerSeconds / 60)}:{String(timerSeconds % 60).padStart(2, '0')}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,53 +1,87 @@
-export type UserRole = 'student' | 'profesor' | 'extern';
+export type UserRole = 'USER' | 'STUDENT' | 'PROFESOR' | 'ADMIN';
 
 export interface User {
-  id: string;
-  name: string;
+  id: number;
+  nume: string;
+  prenume: string;
   email: string;
-  phone: string;
-  role: UserRole;
-  isVerified: boolean;
+  telefon: string;
+  rol: UserRole;
+  data_inregistrare: string;
 }
 
-export interface Facility {
-  id: string;
-  name: string;
-  location: string;
-  totalCourts: number;
-  sports: string[];
-  hasEquipmentRental: boolean;
-  bgGradient: string;
+export interface ComplexDto {
+  id: number;
+  nume: string;
+  adresa: string;
+  descriere?: string;
+  oraDeschidere: string;
+  oraInchidere: string;
 }
 
-export interface TimeSlot {
-  id: string;
-  courtId: string;
-  courtName: string;
-  time: string;
-  status: 'free' | 'occupied' | 'selected' | 'processing';
-  price: number;
+export interface CourtDto {
+  id: number;
+  complexId: number;
+  complexNume: string;
+  nume: string;
+  tipSport: string;
+  esteAcoperit: boolean;
+  tarifOrarStandard: number;
+  durataMinimaOre: number;
 }
 
-export interface EquipmentItem {
-  id: string;
-  name: string;
-  description: string;
-  pricePerSession: number;
-  availableCount: number;
-  maxPerBooking: number;
-  selectedCount: number;
-  iconName: string;
+export interface TemporaryReservationRequest {
+  utilizatorId: number;
+  terenId: number;
+  dataStart: string;
+  dataEnd: string;
 }
 
-export interface Booking {
-  id: string;
-  facilityName: string;
-  courtName: string;
-  date: string;
-  timeSlot: string;
-  equipment: { name: string; quantity: number }[];
-  paymentType: 'individual' | 'subscription';
-  totalPaid: number;
-  status: 'active' | 'completed' | 'cancelled';
-  discountApplied?: string;
+export interface TemporaryReservationResponse {
+  id: number;
+  codRezervare: string;
+  terenId: number;
+  dataStart: string;
+  dataEnd: string;
+  stare: string;
+  dataExpirareBlocaj: string;
+  pretTotal: number;
+  discountAplicat: number;
+}
+
+export interface PaymentRequest {
+  utilizatorId: number;
+  rezervareId: number;
+  suma: number;
+  metodaPlata: string;
+}
+
+export interface SubscriptionPaymentRequest {
+  utilizatorId: number;
+  rezervareId: number;
+}
+
+export interface PaymentResponse {
+  plataId: number;
+  stripeSessionId: string;
+  rezervareId: number;
+  stareRezervare: string;
+  suma: number;
+  stare: string;
+  sedinteRamase?: number;
+}
+
+export interface ApiError {
+  message: string;
+  status?: number;
+}
+
+export interface LoginCredentials {
+  email: string;
+  parola: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
 }

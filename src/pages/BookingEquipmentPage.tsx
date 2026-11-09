@@ -10,6 +10,8 @@ export default function BookingEquipmentPage() {
     updateEquipmentCount,
     timerSeconds,
     decrementTimer,
+    reservation,
+    bookingLoading,
   } = useBookingStore();
 
   useEffect(() => {
@@ -24,9 +26,13 @@ export default function BookingEquipmentPage() {
   };
 
   const equipmentTotal = selectedEquipment.reduce((acc, item) => acc + item.pricePerSession * item.selectedCount, 0);
-  const basePrice = 60;
-  const discount = 35; // Reducere student (50% pe teren)
+  const basePrice = reservation?.pretTotal ?? 60;
+  const discount = reservation?.discountAplicat ?? 0;
   const total = basePrice + equipmentTotal - discount;
+
+  const handleNext = async () => {
+    navigate('/rezervare/plata');
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -41,6 +47,10 @@ export default function BookingEquipmentPage() {
         <BookingStepper currentStep={2} />
       </div>
 
+      {bookingLoading && (
+        <div className="text-center py-10 text-slate-500 text-sm">Procesez rezervarea...</div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Grilă Echipamente */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -48,7 +58,7 @@ export default function BookingEquipmentPage() {
             <div key={item.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">{item.name}</h3>
-                <p className="text-xs text-slate-500">{item.description}</p>
+                <p className="text-xs text-slate-500">Opțional - se închiriază pe durata ședinței</p>
                 <div className="mt-2 text-sm font-bold text-blue-900">{item.pricePerSession} lei / ședință</div>
                 <div className="text-xs text-slate-400 mt-1">Disponibil: {item.availableCount} din {item.maxPerBooking} max</div>
               </div>
@@ -83,8 +93,8 @@ export default function BookingEquipmentPage() {
 
           <div>
             <h3 className="font-bold text-slate-900 text-lg">Sumar rezervare</h3>
-            <p className="text-xs text-slate-500 mt-1">Teren 2 · Tenis</p>
-            <p className="text-xs text-slate-400">Joi, 29 Oct 2026 · 10:00-11:00</p>
+            <p className="text-xs text-slate-500 mt-1">{reservation?.codRezervare ? 'Cod: ' + reservation.codRezervare : 'Teren Fotbal'}</p>
+            <p className="text-xs text-slate-400">{new Date(reservation?.dataStart ?? '').toLocaleDateString('ro-RO')} · {new Date(reservation?.dataStart ?? '').toLocaleTimeString('ro-RO', {hour: '2-digit', minute:'2-digit'})} - {new Date(reservation?.dataEnd ?? '').toLocaleTimeString('ro-RO', {hour: '2-digit', minute:'2-digit'})}</p>
           </div>
 
           <div className="space-y-2 text-sm border-t border-b border-slate-100 py-3">
@@ -92,31 +102,41 @@ export default function BookingEquipmentPage() {
               <span>Închiriere teren</span>
               <span>{basePrice} lei</span>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between text-emerald-700 font-semibold">
+                <span>Reducere aplicată</span>
+                <span>-{discount} lei</span>
+              </div>
+            )}
             {equipmentTotal > 0 && (
               <div className="flex justify-between text-slate-600">
                 <span>Echipament închiriat</span>
                 <span>{equipmentTotal} lei</span>
               </div>
             )}
-            <div className="flex justify-between text-emerald-700 font-semibold">
-              <span>Reducere Student (50%)</span>
-              <span>-{discount} lei</span>
-            </div>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="font-bold text-slate-900">Total</span>
+            <span className="font-bold text-slate-900">Total estimat</span>
             <span className="text-2xl font-extrabold text-slate-900">{total} lei</span>
           </div>
 
           <button
-            onClick={() => navigate('/rezervare/plata')}
-            className="w-full py-3 bg-blue-900 hover:bg-blue-950 text-white font-bold text-sm rounded-lg transition-colors"
+            onClick={handleNext}
+            disabled={bookingLoading}
+            className="w-full py-3 bg-blue-900 hover:bg-blue-950 text-white font-bold text-sm rounded-lg transition-colors disabled:opacity-60"
           >
-            Continuă spre plată →
+            {bookingLoading ? 'Procesez...' : 'Continuă spre plată →'}
           </button>
         </div>
       </div>
+
+      {/* Timer display */}
+      {timerSeconds > 0 && (
+        <div className="text-center py-2 text-xs text-amber-700 font-medium">
+          Slotul expiră în {formatTimer(timerSeconds)}
+        </div>
+      )}
     </div>
   );
 }

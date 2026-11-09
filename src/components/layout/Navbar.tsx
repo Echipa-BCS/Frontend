@@ -1,8 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import { useBookingStore } from '../../store/bookingStore';
+import { LogOut, User as UserIcon } from 'lucide-react';
 
 export default function Navbar() {
   const location = useLocation();
+  const { user, isAuth, logout } = useBookingStore();
 
   const navLinks = [
     { name: 'Căutare', path: '/cautare' },
@@ -10,14 +13,11 @@ export default function Navbar() {
     { name: 'Abonamente', path: '/abonamente' },
   ];
 
-  // Verificăm dacă suntem pe pagina de login pentru a afișa un header simplificat
   const isLoginPage = location.pathname === '/' || location.pathname === '/login';
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
-        {/* LOGO COLȚ STÂNGA SUS (Apare pe absolut toate paginile) */}
         <Link to="/cautare" className="flex items-center gap-3">
           <img src={logo} alt="SportUniverz Logo" className="h-10 w-auto object-contain" />
           <div>
@@ -26,7 +26,6 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Meniu Centru / Dreapta */}
         {isLoginPage ? (
           <button className="px-4 py-1.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors">
             Contact
@@ -53,15 +52,30 @@ export default function Navbar() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <Link
-                to="/contul-meu"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-700 font-medium text-sm"
-              >
-                <div className="w-7 h-7 rounded-full bg-blue-900 text-white text-xs font-bold flex items-center justify-center">
-                  IP
+              {isAuth && user ? (
+                <div className="flex items-center gap-2 pl-2">
+                  <div className="w-7 h-7 rounded-full bg-blue-900 text-white text-xs font-bold flex items-center justify-center">
+                    {user.prenume.charAt(0)}{user.nume.charAt(0)}
+                  </div>
+                  <span className="hidden sm:inline text-sm text-slate-700">{user.prenume}</span>
+                  <button
+                    onClick={logout}
+                    className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-3 h-3" /> Delogare
+                  </button>
                 </div>
-                <span className="hidden sm:inline">Contul meu</span>
-              </Link>
+              ) : (
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-700 font-medium text-sm"
+                >
+                  <div className="w-7 h-7 rounded-full bg-blue-900 text-white text-xs font-bold flex items-center justify-center">
+                    <UserIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="hidden sm:inline">Conectare</span>
+                </Link>
+              )}
             </div>
           </>
         )}

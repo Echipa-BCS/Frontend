@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, Trophy } from 'lucide-react';
+import { useBookingStore } from '../store/bookingStore';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('alex.popescu@student.usv.ro');
+  const [parola, setParola] = useState('password123');
   const navigate = useNavigate();
+  const { login, isLoading, authError } = useBookingStore();
 
-  const handleLogin = (e: React.FormEvent) => {
-  e.preventDefault();
-  navigate('/cautare');
-};
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await login(email, parola);
+      navigate('/cautare');
+    } catch {
+      // error is already set in the store
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-slate-50 p-4">
@@ -25,6 +34,12 @@ export default function LoginPage() {
           </span>
         </div>
 
+        {authError && (
+          <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-100 text-red-700 text-xs font-medium">
+            {authError}
+          </div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Email</label>
@@ -32,7 +47,8 @@ export default function LoginPage() {
               <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="email"
-                defaultValue="nume@exemplu.ro"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
@@ -45,9 +61,10 @@ export default function LoginPage() {
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type={showPassword ? 'text' : 'password'}
-                defaultValue="password123"
+                value={parola}
+                onChange={(e) => setParola(e.target.value)}
                 required
-                className="w-full pl-9 pr-10 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full pl-10 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <button
                 type="button"
@@ -70,14 +87,18 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-lg font-semibold text-sm transition-colors shadow-sm"
+            disabled={isLoading}
+            className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-lg font-semibold text-sm transition-colors shadow-sm disabled:opacity-60"
           >
-            Autentificare
+            {isLoading ? 'Autentificare...' : 'Autentificare'}
           </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-500">
-          Nu ai cont? <a href="#" className="text-blue-700 font-bold hover:underline">Creează cont</a>
+          Conturi de test: <br />
+          <span className="text-xs text-blue-600">alex.popescu@student.usv.ro (Student, 40% reducere)</span><br />
+          <span className="text-xs text-blue-600">ion.ionescu@usm.ro (Profesor, 20% reducere)</span><br />
+          <span className="text-xs text-blue-600">user@gmail.com (Utilizator, 0% reducere)</span>
         </div>
       </div>
     </div>

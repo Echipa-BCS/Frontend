@@ -1,8 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, Calendar, Download } from 'lucide-react';
+import { useBookingStore } from '../store/bookingStore';
 
 export default function BookingConfirmationPage() {
   const navigate = useNavigate();
+  const { reservation, user } = useBookingStore();
+
+  if (!reservation) {
+    navigate('/rezervare/plata');
+    return null;
+  }
+
+  const start = new Date(reservation.dataStart);
+  const end = new Date(reservation.dataEnd);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 text-center space-y-6">
@@ -12,29 +22,39 @@ export default function BookingConfirmationPage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Rezervarea ta a fost înregistrată!</h1>
-          <p className="text-sm text-slate-500 mt-1">Am trimis confirmarea pe adresa de email.</p>
+          <h1 className="text-2xl font-bold text-slate-900">Rezervarea ta a fost confirmată!</h1>
+          <p className="text-sm text-slate-500 mt-1">Detaliile au fost trimise pe adresa de email.</p>
           <span className="inline-block mt-3 px-4 py-1 bg-slate-100 font-mono text-sm font-bold text-slate-700 rounded-lg">
-            Cod rezervare: #RZ-291026-0217
+            Cod rezervare: {reservation.codRezervare}
           </span>
         </div>
 
         <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-left grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-xs text-slate-400 block">Facilitate</span>
-            <span className="font-bold text-slate-800">Complex Sportiv X</span>
+            <span className="text-xs text-slate-400 block">Utilizator</span>
+            <span className="font-bold text-slate-800">{user ? user.prenume + ' ' + user.nume : 'N/A'}</span>
           </div>
           <div>
             <span className="text-xs text-slate-400 block">Teren</span>
-            <span className="font-bold text-slate-800">Teren 2 · Tenis</span>
+            <span className="font-bold text-slate-800">Teren ID {reservation.terenId}</span>
           </div>
           <div>
             <span className="text-xs text-slate-400 block">Data & Ora</span>
-            <span className="font-bold text-slate-800">Joi, 29 Oct 2026 · 10:00 - 11:00</span>
+            <span className="font-bold text-slate-800">
+              {start.toLocaleDateString('ro-RO')} · {start.toLocaleTimeString('ro-RO', {hour: '2-digit', minute: '2-digit'})} - {end.toLocaleTimeString('ro-RO', {hour: '2-digit', minute: '2-digit'})}
+            </span>
           </div>
           <div>
             <span className="text-xs text-slate-400 block">Total Plătit</span>
-            <span className="font-bold text-slate-800">35 lei</span>
+            <span className="font-bold text-slate-800">{reservation.pretTotal} lei</span>
+          </div>
+          <div>
+            <span className="text-xs text-slate-400 block">Reducere</span>
+            <span className="font-bold text-slate-800">{reservation.discountAplicat} lei</span>
+          </div>
+          <div>
+            <span className="text-xs text-slate-400 block">Status</span>
+            <span className="font-bold text-slate-800">{reservation.stare}</span>
           </div>
         </div>
 
