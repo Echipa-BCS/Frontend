@@ -5,9 +5,10 @@ export interface User {
   nume: string;
   prenume: string;
   email: string;
-  telefon: string;
+  telefon?: string | null;
   rol: UserRole;
-  data_inregistrare: string;
+  dataInregistrare?: string;
+  data_inregistrare?: string;
 }
 
 export interface ComplexDto {
@@ -30,6 +31,38 @@ export interface CourtDto {
   durataMinimaOre: number;
 }
 
+export interface EchipamentDto {
+  id: number;
+  complexId: number;
+  denumire: string;
+  tipSport: string;
+  stocTotal: number;
+  tarifInchirierePerOra: number;
+}
+
+export interface RezervareEchipamentRequest {
+  echipamentId: number;
+  cantitate: number;
+}
+
+export interface RezervareEchipamentResponse {
+  echipamentId: number;
+  echipamentDenumire: string;
+  cantitate: number;
+  subtotalPret: number;
+  pretTotalRezervare?: number;
+}
+
+export interface OccupiedSlotDto {
+  id: number;
+  terenId: number;
+  utilizatorId: number;
+  dataStart: string;
+  dataEnd: string;
+  stare: string;
+  dataExpirareBlocaj?: string | null;
+}
+
 export interface TemporaryReservationRequest {
   utilizatorId: number;
   terenId: number;
@@ -47,6 +80,32 @@ export interface TemporaryReservationResponse {
   dataExpirareBlocaj: string;
   pretTotal: number;
   discountAplicat: number;
+}
+
+export interface BookingSummaryDto {
+  id: number;
+  codRezervare: string;
+  terenId: number;
+  terenNume: string;
+  tipSport: string;
+  complexNume: string;
+  dataStart: string;
+  dataEnd: string;
+  stare: 'TEMPORAR_BLOCATA' | 'CONFIRMATA' | 'EXPIRATA' | 'ANULATA' | 'FINALIZATA' | string;
+  pretTotal: number;
+  discountAplicat: number;
+  dataExpirareBlocaj?: string | null;
+  echipamente?: RezervareEchipamentResponse[];
+}
+
+export interface AbonamentDto {
+  id: number;
+  tip: 'GENERAL_ACCESS' | 'INTERVAL_FIX' | string;
+  dataStart: string;
+  dataExpirare: string;
+  sedinteRamase: number;
+  activ: boolean;
+  utilizatorEmail?: string | null;
 }
 
 export interface PaymentRequest {
@@ -68,17 +127,33 @@ export interface PaymentResponse {
   stareRezervare: string;
   suma: number;
   stare: string;
-  sedinteRamase?: number;
+  sedinteRamase?: number | null;
 }
 
 export interface ApiError {
-  message: string;
+  message?: string;
+  error?: string;
   status?: number;
 }
 
 export interface LoginCredentials {
   email: string;
   parola: string;
+}
+
+export interface RegisterRequest {
+  nume: string;
+  prenume: string;
+  email: string;
+  parola: string;
+  telefon?: string;
+}
+
+export interface ProfileUpdateRequest {
+  nume: string;
+  prenume: string;
+  email: string;
+  telefon?: string;
 }
 
 export interface AuthResponse {
