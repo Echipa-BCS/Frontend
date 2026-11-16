@@ -26,14 +26,16 @@ export default function SubscriptionsPage() {
   if (!user) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 text-center">
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h1 className="text-xl font-bold text-slate-900">Autentificare necesară</h1>
-          <p className="text-sm text-slate-500">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            Autentificare necesară
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Intră în cont pentru a vedea și gestiona abonamentele tale sportive.
           </p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-2.5 bg-blue-900 text-white rounded-lg text-sm font-semibold hover:bg-blue-950"
+            className="px-6 py-2.5 bg-blue-900 dark:bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-950 dark:hover:bg-blue-500 cursor-pointer"
           >
             Mergi la autentificare →
           </button>
@@ -88,21 +90,21 @@ export default function SubscriptionsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Abonamente</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Abonamente</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Folosește ședințele din abonamentul activ pentru a confirma rezervări fără plată pe loc
         </p>
       </div>
 
       {subscriptionsError && (
-        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/70 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{subscriptionsError}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/70 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -110,15 +112,17 @@ export default function SubscriptionsPage() {
 
       {/* Abonamentele active ale utilizatorului */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <Ticket className="w-5 h-5 text-blue-900" />
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <Ticket className="w-5 h-5 text-blue-900 dark:text-blue-400" />
           Abonamentele tale active ({activeSubs.length})
         </h2>
 
         {subscriptionsLoading && subscriptions.length === 0 ? (
-          <div className="text-sm text-slate-500 py-8 text-center">Se încarcă abonamentele...</div>
+          <div className="text-sm text-slate-500 dark:text-slate-400 py-8 text-center">
+            Se încarcă abonamentele...
+          </div>
         ) : activeSubs.length === 0 ? (
-          <div className="bg-white p-6 rounded-xl border border-slate-200 text-sm text-slate-500">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 text-sm text-slate-500 dark:text-slate-400">
             Nu ai niciun abonament activ în acest moment. Alege unul dintre pachetele de mai jos!
           </div>
         ) : (
@@ -129,29 +133,29 @@ export default function SubscriptionsPage() {
               return (
                 <div
                   key={sub.id}
-                  className="bg-white p-6 rounded-xl border-2 border-emerald-500/40 shadow-sm space-y-4"
+                  className="bg-white dark:bg-slate-900 p-6 rounded-xl border-2 border-emerald-500/40 dark:border-emerald-500/50 shadow-sm space-y-4 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full">
+                    <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 font-bold text-xs rounded-full">
                       ● Activ
                     </span>
-                    <span className="text-xs font-bold text-blue-900 bg-blue-50 px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold text-blue-900 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-3 py-1 rounded-full">
                       {sub.sedinteRamase} ședințe rămase
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                       {sub.tip === 'GENERAL_ACCESS'
                         ? 'General Access — Acces Complet'
                         : 'Interval Fix — Antrenament'}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       Titular: {user.prenume} {user.nume} ({user.rol})
                     </p>
                   </div>
 
-                  <div className="border-t border-slate-100 pt-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-2">
+                  <div className="border-t border-slate-100 dark:border-slate-800 pt-4 text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
                       Valabilitate: {start.toLocaleDateString('ro-RO')} –{' '}
@@ -160,7 +164,7 @@ export default function SubscriptionsPage() {
                     <button
                       type="button"
                       onClick={() => navigate('/cautare')}
-                      className="text-blue-900 font-bold hover:underline"
+                      className="text-blue-900 dark:text-blue-400 font-bold hover:underline cursor-pointer"
                     >
                       Rezervă cu acest abonament →
                     </button>
@@ -173,14 +177,14 @@ export default function SubscriptionsPage() {
       </div>
 
       {/* Achiziționare abonament nou */}
-      <div className="space-y-4 pt-4 border-t border-slate-200">
+      <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
               Activează un abonament nou (simulare plată)
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Prețurile includ automat reducerea aferentă rolului tău ({user.rol}: -{discountRate * 100}%)
             </p>
           </div>
@@ -190,37 +194,37 @@ export default function SubscriptionsPage() {
           {plans.map((p) => (
             <div
               key={p.tip}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-5"
+              className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-5 transition-colors"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 bg-blue-50 text-blue-900 rounded text-xs font-bold">
+                  <span className="px-2.5 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-900 dark:text-blue-300 rounded text-xs font-bold">
                     {p.sessions} ședințe incluse
                   </span>
-                  <span className="text-xs text-slate-400">Valabil 30 zile</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">Valabil 30 zile</span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">{p.title}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{p.desc}</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{p.title}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{p.desc}</p>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                   {discountRate > 0 && (
-                    <span className="text-xs text-slate-400 line-through block">
+                    <span className="text-xs text-slate-400 dark:text-slate-500 line-through block">
                       {p.basePrice} lei / lună
                     </span>
                   )}
-                  <span className="text-xl font-extrabold text-slate-900">
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
                     {p.finalPrice} lei
                   </span>
-                  <span className="text-xs text-slate-500"> / 30 zile</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400"> / 30 zile</span>
                 </div>
 
                 <button
                   type="button"
                   disabled={buyingType !== null}
                   onClick={() => handleBuy(p.tip, p.title)}
-                  className="px-4 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold rounded-lg transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 bg-blue-900 hover:bg-blue-950 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {buyingType === p.tip ? 'Se activează...' : 'Activează abonamentul →'}
                 </button>
@@ -232,23 +236,23 @@ export default function SubscriptionsPage() {
 
       {/* Istoric abonamente */}
       {pastSubs.length > 0 && (
-        <div className="space-y-3 pt-4 border-t border-slate-200">
-          <h3 className="text-sm font-bold text-slate-600 uppercase">
+        <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <h3 className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase">
             Abonamente epuizate / expirate ({pastSubs.length})
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {pastSubs.map((sub) => (
               <div
                 key={sub.id}
-                className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between text-xs text-slate-500"
+                className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400"
               >
                 <div>
-                  <span className="font-bold text-slate-700 block">{sub.tip}</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-200 block">{sub.tip}</span>
                   <span>
                     Expirare: {new Date(sub.dataExpirare).toLocaleDateString('ro-RO')}
                   </span>
                 </div>
-                <span className="px-2.5 py-1 bg-slate-200 text-slate-700 rounded font-semibold">
+                <span className="px-2.5 py-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded font-semibold">
                   {sub.sedinteRamase} ședințe rămase
                 </span>
               </div>

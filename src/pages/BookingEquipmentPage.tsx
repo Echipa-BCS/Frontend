@@ -73,12 +73,14 @@ export default function BookingEquipmentPage() {
         <div>
           <button
             onClick={() => navigate('/rezervare/interval')}
-            className="text-xs font-semibold text-blue-700 hover:underline mb-1 inline-block"
+            className="text-xs font-semibold text-blue-700 dark:text-blue-400 hover:underline mb-1 inline-block cursor-pointer"
           >
             ← Înapoi la alegerea intervalului
           </button>
-          <h1 className="text-2xl font-bold text-slate-900">Alege echipamentul sportiv</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Alege echipamentul sportiv
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Opțional — echipamentul selectat se atașează rezervării tale și se închiriază pe durata ședinței
           </p>
         </div>
@@ -86,7 +88,7 @@ export default function BookingEquipmentPage() {
       </div>
 
       {bookingError && (
-        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/70 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{bookingError}</span>
         </div>
@@ -100,27 +102,36 @@ export default function BookingEquipmentPage() {
             return (
               <div
                 key={item.id}
-                className={`bg-white p-5 rounded-xl border shadow-sm flex flex-col justify-between space-y-4 transition-all ${
-                  isSelected ? 'border-blue-600 ring-1 ring-blue-600' : 'border-slate-200'
+                className={`bg-white dark:bg-slate-900 p-5 rounded-xl border shadow-sm flex flex-col justify-between space-y-4 transition-all ${
+                  isSelected
+                    ? 'border-blue-600 dark:border-blue-500 ring-1 ring-blue-600 dark:ring-blue-500'
+                    : 'border-slate-200 dark:border-slate-800'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-semibold flex items-center gap-1">
+                    <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded text-[11px] font-semibold flex items-center gap-1">
                       <Dumbbell className="w-3 h-3" /> {item.sportType}
                     </span>
-                    <span className="text-xs text-slate-400">
-                      Stoc disponibil: <strong>{item.availableCount}</strong>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">
+                      Stoc disponibil:{' '}
+                      <strong className="text-slate-700 dark:text-slate-200">
+                        {item.availableCount}
+                      </strong>
                     </span>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base mt-2">{item.name}</h3>
-                  <p className="text-xs text-slate-500">Se închiriază pe durata ședinței</p>
-                  <div className="mt-2 text-sm font-bold text-blue-900">
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base mt-2">
+                    {item.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Se închiriază pe durata ședinței
+                  </p>
+                  <div className="mt-2 text-sm font-bold text-blue-900 dark:text-blue-400">
                     {item.pricePerSession} lei / oră
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border-t pt-3 border-slate-100">
+                <div className="flex items-center justify-between border-t pt-3 border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -128,11 +139,13 @@ export default function BookingEquipmentPage() {
                         updateEquipmentCount(item.id, Math.max(0, item.selectedCount - 1))
                       }
                       disabled={item.selectedCount === 0}
-                      className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+                      className="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer"
                     >
                       -
                     </button>
-                    <span className="w-6 text-center font-bold text-sm">{item.selectedCount}</span>
+                    <span className="w-6 text-center font-bold text-sm text-slate-900 dark:text-slate-100">
+                      {item.selectedCount}
+                    </span>
                     <button
                       type="button"
                       onClick={() =>
@@ -142,12 +155,12 @@ export default function BookingEquipmentPage() {
                         )
                       }
                       disabled={item.selectedCount >= item.availableCount}
-                      className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+                      className="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer"
                     >
                       +
                     </button>
                   </div>
-                  <span className="font-bold text-slate-900 text-sm">
+                  <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
                     {item.pricePerSession * item.selectedCount} lei
                   </span>
                 </div>
@@ -157,44 +170,46 @@ export default function BookingEquipmentPage() {
         </div>
 
         {/* Sidebar Sumar Rezervare */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6 h-fit">
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 font-semibold flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 h-fit transition-colors">
+          <div className="bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/70 rounded-lg p-3 text-xs text-amber-800 dark:text-amber-300 font-semibold flex items-center justify-between">
             <span>⏱ Interval blocat temporar</span>
-            <span className="font-bold text-amber-900">{formatTimer(timerSeconds)}</span>
+            <span className="font-bold text-amber-900 dark:text-amber-200">
+              {formatTimer(timerSeconds)}
+            </span>
           </div>
 
           <div>
-            <h3 className="font-bold text-slate-900 text-lg">Sumar rezervare</h3>
-            <p className="text-xs font-semibold text-slate-700 mt-1">
+            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg">Sumar rezervare</h3>
+            <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 mt-1">
               {selectedCourt?.nume || selectedCourtName || `Teren #${reservation.terenId}`}
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Cod: <span className="font-mono">{reservation.codRezervare.slice(0, 10)}</span>
             </p>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               {startDate.toLocaleDateString('ro-RO')} ·{' '}
               {startDate.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })} –{' '}
               {endDate.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
 
-          <div className="space-y-2 text-sm border-t border-b border-slate-100 py-3">
-            <div className="flex justify-between text-slate-600">
+          <div className="space-y-2 text-sm border-t border-b border-slate-100 dark:border-slate-800 py-3">
+            <div className="flex justify-between text-slate-600 dark:text-slate-300">
               <span>Tarif standard teren</span>
               <span>{standardCourtPrice} lei</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-emerald-700 font-semibold">
+              <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-semibold">
                 <span>Reducere rol aplicată</span>
                 <span>-{discount} lei</span>
               </div>
             )}
-            <div className="flex justify-between text-slate-800 font-medium">
+            <div className="flex justify-between text-slate-800 dark:text-slate-200 font-medium">
               <span>Subtotal teren</span>
               <span>{discountedCourtPrice} lei</span>
             </div>
             {equipmentTotal > 0 && (
-              <div className="flex justify-between text-blue-900 font-medium pt-1 border-t border-slate-100">
+              <div className="flex justify-between text-blue-900 dark:text-blue-400 font-medium pt-1 border-t border-slate-100 dark:border-slate-800">
                 <span>Echipament selectat</span>
                 <span>+{equipmentTotal} lei</span>
               </div>
@@ -202,15 +217,17 @@ export default function BookingEquipmentPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="font-bold text-slate-900">Total de plată</span>
-            <span className="text-2xl font-extrabold text-slate-900">{total} lei</span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">Total de plată</span>
+            <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
+              {total} lei
+            </span>
           </div>
 
           <button
             type="button"
             onClick={handleNext}
             disabled={bookingLoading || timerSeconds === 0}
-            className="w-full py-3 bg-blue-900 hover:bg-blue-950 text-white font-bold text-sm rounded-lg transition-colors disabled:opacity-60"
+            className="w-full py-3 bg-blue-900 hover:bg-blue-950 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-sm rounded-lg transition-colors disabled:opacity-60 cursor-pointer"
           >
             {bookingLoading ? 'Se salvează echipamentul...' : 'Continuă spre plată →'}
           </button>
