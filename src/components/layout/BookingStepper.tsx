@@ -23,24 +23,26 @@ export default function BookingStepper({ currentStep }: StepperProps) {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
                   isCompleted
-                    ? 'bg-blue-900 text-white'
+                    ? 'bg-blue-900 dark:bg-blue-600 text-white'
                     : isCurrent
                     ? 'bg-amber-500 text-white shadow-md'
-                    : 'bg-slate-200 text-slate-500'
+                    : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                 }`}
               >
                 {isCompleted ? <Check className="w-4 h-4" /> : step.number}
               </div>
               <span
                 className={`text-sm font-medium ${
-                  isCurrent ? 'text-slate-900 font-bold' : 'text-slate-500'
+                  isCurrent
+                    ? 'text-slate-900 dark:text-slate-100 font-bold'
+                    : 'text-slate-500 dark:text-slate-400'
                 }`}
               >
                 {step.label}
               </span>
             </div>
             {idx < steps.length - 1 && (
-              <div className="w-12 h-0.5 mx-3 bg-slate-200" />
+              <div className="w-12 h-0.5 mx-3 bg-slate-200 dark:bg-slate-700" />
             )}
           </div>
         );
