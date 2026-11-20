@@ -51,15 +51,17 @@ export default function SearchPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Caută o facilitate sportivă</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Caută o facilitate sportivă
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Filtrează după locație și tip de sport, apoi alege intervalul orar dorit
           </p>
         </div>
 
         {user && discountRate > 0 && (
-          <div className="inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-semibold">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/70 text-emerald-800 dark:text-emerald-300 rounded-xl text-xs font-semibold">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>
               Beneficiezi de <strong>{discountRate * 100}% reducere</strong> ({user.rol}) la toate terenurile!
             </span>
@@ -68,23 +70,23 @@ export default function SearchPage() {
       </div>
 
       {catalogError && (
-        <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-100 text-red-700 text-xs font-medium">
+        <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-100 dark:border-red-800/70 text-red-700 dark:text-red-300 text-xs font-medium">
           {catalogError}
         </div>
       )}
 
       {/* Bară de filtrare */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4 items-end transition-colors">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">
             Locație (complex)
           </label>
           <div className="relative">
-            <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-3" />
             <select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
             >
               <option value="">Toate locațiile</option>
               {complexList.map((c) => (
@@ -97,15 +99,15 @@ export default function SearchPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">
             Tip sport
           </label>
           <div className="relative">
-            <Dumbbell className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <Dumbbell className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-3" />
             <select
               value={activity}
               onChange={(e) => setActivity(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
             >
               <option value="">Toate tipurile de sport</option>
               {SPORT_OPTIONS.map((sport) => (
@@ -121,13 +123,13 @@ export default function SearchPage() {
           <button
             onClick={handleSearch}
             disabled={complexesLoading}
-            className="flex-1 bg-blue-900 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
+            className="flex-1 bg-blue-900 hover:bg-blue-950 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-60 cursor-pointer"
           >
             <Search className="w-4 h-4" /> Caută
           </button>
           <button
             onClick={handleReset}
-            className="px-3 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-sm flex items-center gap-1"
+            className="px-3 py-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-sm flex items-center gap-1 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" /> Resetează
           </button>
@@ -137,17 +139,19 @@ export default function SearchPage() {
       {/* Grila de carduri */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-slate-700">
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
             {courts.length} teren{courts.length === 1 ? '' : 'uri'} găsite
           </span>
         </div>
 
         {complexesLoading && (
-          <div className="text-center py-10 text-slate-500 text-sm">Se încarcă terenurile...</div>
+          <div className="text-center py-10 text-slate-500 dark:text-slate-400 text-sm">
+            Se încarcă terenurile...
+          </div>
         )}
 
         {!complexesLoading && courts.length === 0 && (
-          <div className="text-center py-10 bg-white rounded-xl border border-slate-200 text-slate-500 text-sm">
+          <div className="text-center py-10 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-sm">
             Nu au fost găsite terenuri pentru criteriile selectate.
           </div>
         )}
@@ -158,9 +162,9 @@ export default function SearchPage() {
             return (
               <div
                 key={fac.id}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col hover:shadow-md dark:hover:border-slate-700 transition-all"
               >
-                <div className="h-36 bg-gradient-to-br from-blue-900 to-slate-800 p-4 flex flex-col justify-between text-white relative">
+                <div className="h-36 bg-gradient-to-br from-blue-900 to-slate-800 dark:from-blue-950 dark:to-slate-900 p-4 flex flex-col justify-between text-white relative">
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-0.5 bg-white/15 backdrop-blur-sm rounded-full text-xs font-semibold">
                       {fac.tipSport}
@@ -184,30 +188,38 @@ export default function SearchPage() {
                 </div>
 
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-1.5 text-xs text-slate-500">
-                    <p>Durată minimă rezervare: <strong>{fac.durataMinimaOre} oră</strong></p>
-                    <p>Program complex: <strong>08:00 – 22:00</strong></p>
+                  <div className="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+                    <p>
+                      Durată minimă rezervare:{' '}
+                      <strong className="text-slate-700 dark:text-slate-200">
+                        {fac.durataMinimaOre} oră
+                      </strong>
+                    </p>
+                    <p>
+                      Program complex:{' '}
+                      <strong className="text-slate-700 dark:text-slate-200">08:00 – 22:00</strong>
+                    </p>
                   </div>
 
-                  <div className="space-y-3 pt-3 border-t border-slate-100">
+                  <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                     {discountRate > 0 ? (
                       <div>
-                        <span className="text-xs text-slate-400 line-through mr-2">
+                        <span className="text-xs text-slate-400 dark:text-slate-500 line-through mr-2">
                           {fac.tarifOrarStandard} lei / oră
                         </span>
-                        <span className="text-sm text-emerald-700 font-bold">
+                        <span className="text-sm text-emerald-700 dark:text-emerald-400 font-bold">
                           ✓ {discountedPrice} lei / oră (-{discountRate * 100}%)
                         </span>
                       </div>
                     ) : (
-                      <span className="text-sm text-emerald-700 font-bold flex items-center gap-1">
+                      <span className="text-sm text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
                         ✓ {fac.tarifOrarStandard} lei / oră
                       </span>
                     )}
 
                     <button
                       onClick={() => handleChooseCourt(fac)}
-                      className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-semibold text-sm rounded-lg transition-colors"
+                      className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-sm rounded-lg transition-colors cursor-pointer"
                     >
                       Alege acest teren →
                     </button>
