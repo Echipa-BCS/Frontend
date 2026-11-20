@@ -1,14 +1,21 @@
-import { apiClient, API_BASE_URL } from './client';
+import { apiClient } from './client';
 import type {
   ComplexDto,
   CourtDto,
+  EchipamentDto,
+  OccupiedSlotDto,
   TemporaryReservationRequest,
   TemporaryReservationResponse,
+  RezervareEchipamentRequest,
+  RezervareEchipamentResponse,
+  BookingSummaryDto,
+  AbonamentDto,
   PaymentRequest,
   PaymentResponse,
   SubscriptionPaymentRequest,
   User,
-  LoginCredentials,
+  RegisterRequest,
+  ProfileUpdateRequest,
   AuthResponse,
 } from '../types';
 
@@ -16,9 +23,6 @@ import type {
 /* Auth                                                               */
 /* ------------------------------------------------------------------ */
 
-/**
- * Login: calls backend POST /api/auth/login and returns JWT + user.
- */
 export async function login(email: string, parola: string): Promise<AuthResponse> {
   const credentials = { email, parola };
   const { data } = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
@@ -26,6 +30,21 @@ export async function login(email: string, parola: string): Promise<AuthResponse
   localStorage.setItem('campus_booking_token', data.token);
   localStorage.setItem('campus_booking_user', JSON.stringify(data.user));
 
+  return data;
+}
+
+export async function register(req: RegisterRequest): Promise<AuthResponse> {
+  const { data } = await apiClient.post<AuthResponse>('/api/auth/register', req);
+
+  localStorage.setItem('campus_booking_token', data.token);
+  localStorage.setItem('campus_booking_user', JSON.stringify(data.user));
+
+  return data;
+}
+
+export async function getMe(): Promise<User> {
+  const { data } = await apiClient.get<User>('/api/auth/me');
+  localStorage.setItem('campus_booking_user', JSON.stringify(data));
   return data;
 }
 
@@ -72,9 +91,28 @@ export async function getTerenuri(
   return data;
 }
 
+/** GET /api/echipamente */
+export async function getEchipamente(complexId?: number): Promise<EchipamentDto[]> {
+  const params: Record<string, string | number> = {};
+  if (complexId) params.complexId = complexId;
+  const { data } = await apiClient.get<EchipamentDto[]>('/api/echipamente', { params });
+  return data;
+}
+
 /* ------------------------------------------------------------------ */
-/* Booking                                                            */
+/* Booking & Availability                                             */
 /* ------------------------------------------------------------------ */
+
+/** GET /api/rezervari/availability?date=YYYY-MM-DD&terenId= */
+export async function getOccupiedSlots(
+  date: string,
+  terenId?: number
+): Promise<OccupiedSlotDto[]> {
+  const params: Record<string, string | number> = { date };
+  if (terenId) params.terenId = terenId;
+  const { data } = await apiClient.get<OccupiedSlotDto[]>('/api/rezervari/availability', { params });
+  return data;
+}
 
 /** POST /api/rezervari/temporary */
 export async function reserveTemporary(
@@ -83,6 +121,38 @@ export async function reserveTemporary(
   const { data } = await apiClient.post<TemporaryReservationResponse>(
     '/api/rezervari/temporary',
     req
+  );
+  return data;
+}
+
+/** POST /api/rezervari/{rezervareId}/echipamente */
+export async function addEchipamentToRezervare(
+  rezervareId: number,
+  req: RezervareEchipamentRequest
+): Promise<RezervareEchipamentResponse> {
+  const { data } = await apiClient.post<RezervareEchipamentResponse>(
+    `/api/rezervari/${rezervareId}/echipamente`,
+    req
+  );
+  return data;
+}
+
+/* ------------------------------------------------------------------ */
+/* User Bookings (My Reservations)                                    */
+/* ------------------------------------------------------------------ */
+
+/** GET /api/bookings */
+export async function getMyBookings(): Promise<BookingSummaryDto[]> {
+  const { data } = await apiClient.get<BookingSummaryDto[]>('/api/bookings');
+  return data;
+}
+
+/** PUT /api/bookings/{id}/cancel */
+export async function cancelBooking(
+  id: number
+): Promise<{ message: string; id: number; stare: string }> {
+  const { data } = await apiClient.put<{ message: string; id: number; stare: string }>(
+    `/api/bookings/${id}/cancel`
   );
   return data;
 }
@@ -110,6 +180,42 @@ export async function processSubscriptionPayment(
     '/api/plati/subscription',
     req
   );
+  return data;
+}
+
+/* ------------------------------------------------------------------ */
+/* Subscriptions                                                      */
+/* ------------------------------------------------------------------ */
+
+/** GET /api/subscriptions */
+export async function getMySubscriptions(): Promise<AbonamentDto[]> {
+  const { data } = await apiClient.get<AbonamentDto[]>('/api/subscriptions');
+  return data;
+}
+
+/** POST /api/subscriptions/purchase */
+export async function purchaseSubscription(
+  tip: 'GENERAL_ACCESS' | 'INTERVAL_FIX'
+): Promise<AbonamentDto> {
+  const { data } = await apiClient.post<AbonamentDto>('/api/subscriptions/purchase', { tip });
+  return data;
+}
+
+/* ------------------------------------------------------------------ */
+/* Profile                                                            */
+/* ------------------------------------------------------------------ */
+
+/** GET /api/profile */
+export async function getProfile(): Promise<User> {
+  const { data } = await apiClient.get<User>('/api/profile');
+  localStorage.setItem('campus_booking_user', JSON.stringify(data));
+  return data;
+}
+
+/** PUT /api/profile */
+export async function updateProfile(req: ProfileUpdateRequest): Promise<User> {
+  const { data } = await apiClient.put<User>('/api/profile', req);
+  localStorage.setItem('campus_booking_user', JSON.stringify(data));
   return data;
 }
 
